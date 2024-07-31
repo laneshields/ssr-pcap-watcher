@@ -52,18 +52,20 @@ def main(args):
     notifier = pyinotify.Notifier(wm, event_handler)
     wm.add_watch(str(LOGDIR), pyinotify.ALL_EVENTS)
     try:
-        for interface in args.interface:
-            wm.add_watch(
-                str(LOGDIR / IF_CAPTURE_FILE_FORMAT.format(interface)),
-                pyinotify.IN_MOVE_SELF | pyinotify.IN_CREATE | pyinotify.IN_DELETE,
-                quiet=False
-            )
-        for service in args.service:
-            wm.add_watch(
-                str(LOGDIR / SERVICE_CAPTURE_FILE_FORMAT.format(service)),
-                pyinotify.IN_MOVE_SELF | pyinotify.IN_CREATE | pyinotify.IN_DELETE,
-                quiet=False
-            )
+        if args.interface:
+            for interface in args.interface:
+                wm.add_watch(
+                    str(LOGDIR / IF_CAPTURE_FILE_FORMAT.format(interface)),
+                    pyinotify.IN_MOVE_SELF | pyinotify.IN_CREATE | pyinotify.IN_DELETE,
+                    quiet=False
+                )
+        if args.service:
+            for service in args.service:
+                wm.add_watch(
+                    str(LOGDIR / SERVICE_CAPTURE_FILE_FORMAT.format(service)),
+                    pyinotify.IN_MOVE_SELF | pyinotify.IN_CREATE | pyinotify.IN_DELETE,
+                    quiet=False
+                )
     except pyinotify.WatchManagerError as err:
             print(f"error: {err}")
             print(f"{pathlib.Path(__file__).name} must watch existing files, please send some traffic and try again or check the option values passed")
